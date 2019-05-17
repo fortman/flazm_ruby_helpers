@@ -5,15 +5,15 @@ require 'json'
 
 # Adding transversal logic
 class ::Array # rubocop:disable Style/ClassAndModuleChildren
-  def walk_values(vproc)
+  def visit_values(vproc)
     map do |array_item|
-      array_item.is_a?(Hash) || array_item.is_a?(Array) ? array_item.walk_values(vproc) : vproc.call(array_item)
+      array_item.is_a?(Hash) || array_item.is_a?(Array) ? array_item.visit_values(vproc) : vproc.call(array_item)
     end
   end
 
-  def walk_keys(kproc)
+  def visit_keys(kproc)
     map do |array_item|
-      array_item.is_a?(Hash) || array_item.is_a?(Array) ? array_item.walk_keys(kproc) : array_item
+      array_item.is_a?(Hash) || array_item.is_a?(Array) ? array_item.visit_keys(kproc) : array_item
     end
   end
 
@@ -33,16 +33,16 @@ class ::Hash # rubocop:disable Style/ClassAndModuleChildren
     merge(second, &merger)
   end
 
-  def walk_values(vproc)
+  def visit_values(vproc)
     map do |key, value|
-      value.is_a?(Hash) || value.is_a?(Array) ? { key => value.walk_values(vproc) } : { key => vproc.call(value) }
+      value.is_a?(Hash) || value.is_a?(Array) ? { key => value.visit_values(vproc) } : { key => vproc.call(value) }
     end.reduce({}, :merge)
   end
 
-  def walk_keys(kproc)
+  def visit_keys(kproc)
     map do |key, value|
       if value.is_a?(Hash) || value.is_a?(Array)
-        { kproc.call(key) => value.walk_keys(kproc) }
+        { kproc.call(key) => value.visit_keys(kproc) }
       else
         { kproc.call(key) => value }
       end
