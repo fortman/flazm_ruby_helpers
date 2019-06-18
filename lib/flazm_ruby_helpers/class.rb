@@ -2,7 +2,7 @@
 
 module FlazmRubyHelpers
   # Define methods to handle default initialization behavior
-  module ClassHelper
+  module Class
     def initialize_variables(config = {})
       # define the defaults method in the class that includes this
       # defaults method returns a hash of instance variables mapped to values
